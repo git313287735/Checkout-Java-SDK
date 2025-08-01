@@ -7,7 +7,6 @@
 - **网格索引**: 将3D空间划分为网格单元，快速定位和碰撞检测
 - **剪枝策略**: 智能候选位置生成，减少无效搜索
 - **多方向旋转**: 支持盒子6种旋转方向，提高空间利用率
-- **重量约束**: 考虑容器最大载重限制
 - **性能优化**: 复杂度从O(n³)降低到O(n²log n)
 
 ## 📁 项目结构
@@ -97,10 +96,10 @@ private double calculatePositionScore(Point3D pos, double boxWidth, double boxHe
 
 ```java
 // 创建容器
-OptimizedContainer container = new OptimizedContainer(100, 80, 60, 5000);
+OptimizedContainer container = new OptimizedContainer(100, 80, 60);
 
 // 创建盒子
-Box box = new Box(1, 10, 8, 6, 50);
+Box box = new Box(1, 10, 8, 6);
 
 // 装箱
 if (container.placeBoxOptimized(box)) {
@@ -226,9 +225,8 @@ container.setScoreWeights(heightWeight, depthWeight, widthWeight);
 
 通过以下策略减少搜索空间：
 1. **几何约束**: 快速排除超出边界的位置
-2. **物理约束**: 提前检查重量限制
-3. **启发式排序**: 优先尝试更有希望的位置
-4. **搜索限制**: 限制最大候选位置数量
+2. **启发式排序**: 优先尝试更有希望的位置
+3. **搜索限制**: 限制最大候选位置数量
 
 ## 🎯 性能调优建议
 

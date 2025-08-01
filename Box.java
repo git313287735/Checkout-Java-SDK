@@ -6,7 +6,6 @@ public class Box {
     private double width, height, depth;  // 原始尺寸
     private Point3D position;             // 当前位置
     private int orientation;              // 旋转方向 (0-5, 表示6种可能的旋转)
-    private double weight;                // 重量
     private boolean placed;               // 是否已放置
     
     // 6种可能的旋转方向对应的尺寸
@@ -19,12 +18,11 @@ public class Box {
         {2, 1, 0}  // d, h, w
     };
     
-    public Box(int id, double width, double height, double depth, double weight) {
+    public Box(int id, double width, double height, double depth) {
         this.id = id;
         this.width = width;
         this.height = height;
         this.depth = depth;
-        this.weight = weight;
         this.position = new Point3D();
         this.orientation = 0;
         this.placed = false;
@@ -35,7 +33,6 @@ public class Box {
         this.width = other.width;
         this.height = other.height;
         this.depth = other.depth;
-        this.weight = other.weight;
         this.position = new Point3D(other.position);
         this.orientation = other.orientation;
         this.placed = other.placed;
@@ -88,7 +85,6 @@ public class Box {
     public double getWidth() { return width; }
     public double getHeight() { return height; }
     public double getDepth() { return depth; }
-    public double getWeight() { return weight; }
     public Point3D getPosition() { return position; }
     public void setPosition(Point3D position) { this.position = new Point3D(position); }
     public int getOrientation() { return orientation; }

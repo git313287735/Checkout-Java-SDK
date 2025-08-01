@@ -28,33 +28,30 @@ public class BinPackingPerformanceTest {
         double containerWidth = 100.0;
         double containerHeight = 80.0;
         double containerDepth = 60.0;
-        double maxWeight = 10000.0;
         
         System.out.println("容器尺寸: " + containerWidth + "x" + containerHeight + "x" + containerDepth);
-        System.out.println("最大重量: " + maxWeight);
         
         // 测试优化算法
-        testOptimizedAlgorithm(boxes, containerWidth, containerHeight, containerDepth, maxWeight);
+        testOptimizedAlgorithm(boxes, containerWidth, containerHeight, containerDepth);
         
         // 测试暴力算法（仅在盒子数量较少时）
         if (boxCount <= 50) {
-            testBruteForceAlgorithm(boxes, containerWidth, containerHeight, containerDepth, maxWeight);
+            testBruteForceAlgorithm(boxes, containerWidth, containerHeight, containerDepth);
         } else {
             System.out.println("暴力算法: 跳过测试（数据量过大）");
         }
         
         // 测试基础算法
-        testBasicAlgorithm(boxes, containerWidth, containerHeight, containerDepth, maxWeight);
+        testBasicAlgorithm(boxes, containerWidth, containerHeight, containerDepth);
     }
     
     /**
      * 测试优化算法
      */
-    private static void testOptimizedAlgorithm(List<Box> boxes, double width, double height, 
-                                             double depth, double maxWeight) {
+    private static void testOptimizedAlgorithm(List<Box> boxes, double width, double height, double depth) {
         System.out.println("--- 优化算法 (网格索引+剪枝) ---");
         
-        OptimizedContainer container = new OptimizedContainer(width, height, depth, maxWeight);
+        OptimizedContainer container = new OptimizedContainer(width, height, depth);
         
         long startTime = System.currentTimeMillis();
         int placedCount = 0;
@@ -71,7 +68,6 @@ public class BinPackingPerformanceTest {
         
         System.out.println("放置成功: " + placedCount + "/" + boxes.size());
         System.out.println("空间利用率: " + String.format("%.2f%%", container.getUtilization() * 100));
-        System.out.println("重量利用率: " + String.format("%.2f%%", container.getWeightUtilization() * 100));
         System.out.println("执行时间: " + duration + "ms");
         System.out.println("平均每个盒子: " + String.format("%.2f", (double)duration / boxes.size()) + "ms");
         System.out.println(container.getPerformanceStats());
@@ -81,11 +77,10 @@ public class BinPackingPerformanceTest {
     /**
      * 测试暴力算法
      */
-    private static void testBruteForceAlgorithm(List<Box> boxes, double width, double height, 
-                                              double depth, double maxWeight) {
+    private static void testBruteForceAlgorithm(List<Box> boxes, double width, double height, double depth) {
         System.out.println("--- 暴力算法 (O(n³)搜索) ---");
         
-        OptimizedContainer container = new OptimizedContainer(width, height, depth, maxWeight);
+        OptimizedContainer container = new OptimizedContainer(width, height, depth);
         
         long startTime = System.currentTimeMillis();
         int placedCount = 0;
@@ -102,7 +97,6 @@ public class BinPackingPerformanceTest {
         
         System.out.println("放置成功: " + placedCount + "/" + boxes.size());
         System.out.println("空间利用率: " + String.format("%.2f%%", container.getUtilization() * 100));
-        System.out.println("重量利用率: " + String.format("%.2f%%", container.getWeightUtilization() * 100));
         System.out.println("执行时间: " + duration + "ms");
         System.out.println("平均每个盒子: " + String.format("%.2f", (double)duration / boxes.size()) + "ms");
         System.out.println();
@@ -111,11 +105,10 @@ public class BinPackingPerformanceTest {
     /**
      * 测试基础算法
      */
-    private static void testBasicAlgorithm(List<Box> boxes, double width, double height, 
-                                         double depth, double maxWeight) {
+    private static void testBasicAlgorithm(List<Box> boxes, double width, double height, double depth) {
         System.out.println("--- 基础算法 (简单放置) ---");
         
-        Container container = new Container(width, height, depth, maxWeight);
+        Container container = new Container(width, height, depth);
         
         long startTime = System.currentTimeMillis();
         int placedCount = 0;
@@ -142,7 +135,6 @@ public class BinPackingPerformanceTest {
         
         System.out.println("放置成功: " + placedCount + "/" + boxes.size());
         System.out.println("空间利用率: " + String.format("%.2f%%", container.getUtilization() * 100));
-        System.out.println("重量利用率: " + String.format("%.2f%%", container.getWeightUtilization() * 100));
         System.out.println("执行时间: " + duration + "ms");
         System.out.println("平均每个盒子: " + String.format("%.2f", (double)duration / boxes.size()) + "ms");
         System.out.println();
@@ -160,9 +152,8 @@ public class BinPackingPerformanceTest {
             double width = 5 + random.nextDouble() * 15;   // 5-20
             double height = 5 + random.nextDouble() * 15;  // 5-20
             double depth = 5 + random.nextDouble() * 15;   // 5-20
-            double weight = 10 + random.nextDouble() * 90; // 10-100
             
-            boxes.add(new Box(i, width, height, depth, weight));
+            boxes.add(new Box(i, width, height, depth));
         }
         
         // 按体积降序排序（大盒子优先）
@@ -185,7 +176,7 @@ public class BinPackingPerformanceTest {
             System.out.println("容器尺寸: " + size + "³");
             List<Box> boxes = generateTestBoxes(boxCount);
             
-            OptimizedContainer container = new OptimizedContainer(size, size, size, 10000);
+            OptimizedContainer container = new OptimizedContainer(size, size, size);
             
             long startTime = System.nanoTime();
             int placedCount = 0;
@@ -221,7 +212,7 @@ public class BinPackingPerformanceTest {
         
         for (int size : testSizes) {
             List<Box> boxes = generateTestBoxes(size);
-            OptimizedContainer container = new OptimizedContainer(containerSize, containerSize, containerSize, 10000);
+            OptimizedContainer container = new OptimizedContainer(containerSize, containerSize, containerSize);
             
             long startTime = System.nanoTime();
             

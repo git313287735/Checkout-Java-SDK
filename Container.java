@@ -5,31 +5,24 @@ import java.util.*;
  */
 public class Container {
     private double width, height, depth;
-    private double maxWeight;
     private List<Box> boxes;
-    private double currentWeight;
     
-    public Container(double width, double height, double depth, double maxWeight) {
+    public Container(double width, double height, double depth) {
         this.width = width;
         this.height = height;
         this.depth = depth;
-        this.maxWeight = maxWeight;
         this.boxes = new ArrayList<>();
-        this.currentWeight = 0;
     }
     
     public Container(Container other) {
         this.width = other.width;
         this.height = other.height;
         this.depth = other.depth;
-        this.maxWeight = other.maxWeight;
         this.boxes = new ArrayList<>();
-        this.currentWeight = 0;
         
         for (Box box : other.boxes) {
             Box newBox = new Box(box);
             this.boxes.add(newBox);
-            this.currentWeight += newBox.getWeight();
         }
     }
     
@@ -48,10 +41,7 @@ public class Container {
             return false;
         }
         
-        // 检查重量限制
-        if (currentWeight + box.getWeight() > maxWeight) {
-            return false;
-        }
+
         
         // 检查与其他盒子的碰撞
         for (Box existingBox : boxes) {
@@ -74,7 +64,6 @@ public class Container {
             
             if (!boxes.contains(box)) {
                 boxes.add(box);
-                currentWeight += box.getWeight();
             }
             return true;
         }
@@ -86,7 +75,6 @@ public class Container {
      */
     public boolean removeBox(Box box) {
         if (boxes.remove(box)) {
-            currentWeight -= box.getWeight();
             box.setPlaced(false);
             return true;
         }
@@ -139,19 +127,10 @@ public class Container {
         return usedVolume / getVolume();
     }
     
-    /**
-     * 获取重量利用率
-     */
-    public double getWeightUtilization() {
-        return currentWeight / maxWeight;
-    }
-    
     // Getters
     public double getWidth() { return width; }
     public double getHeight() { return height; }
     public double getDepth() { return depth; }
-    public double getMaxWeight() { return maxWeight; }
-    public double getCurrentWeight() { return currentWeight; }
     public double getVolume() { return width * height * depth; }
     public List<Box> getBoxes() { return new ArrayList<>(boxes); }
     public int getPlacedBoxCount() {
@@ -160,7 +139,7 @@ public class Container {
     
     @Override
     public String toString() {
-        return String.format("Container[dims=(%.1f,%.1f,%.1f), boxes=%d, util=%.2f%%, weight=%.1f/%.1f]",
-            width, height, depth, getPlacedBoxCount(), getUtilization() * 100, currentWeight, maxWeight);
+        return String.format("Container[dims=(%.1f,%.1f,%.1f), boxes=%d, util=%.2f%%]",
+            width, height, depth, getPlacedBoxCount(), getUtilization() * 100);
     }
 }

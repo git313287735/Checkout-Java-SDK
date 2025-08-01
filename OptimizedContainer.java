@@ -6,23 +6,19 @@ import java.util.*;
  */
 public class OptimizedContainer {
     private final double width, height, depth;
-    private final double maxWeight;
     private final GridIndex gridIndex;
     private final List<Box> placedBoxes;
     private final PriorityQueue<Point3D> candidatePositions;
-    private double currentWeight;
     
     // 剪枝参数
     private final double minBoxSize;
     private final int maxCandidates;
     
-    public OptimizedContainer(double width, double height, double depth, double maxWeight) {
+    public OptimizedContainer(double width, double height, double depth) {
         this.width = width;
         this.height = height;
         this.depth = depth;
-        this.maxWeight = maxWeight;
         this.placedBoxes = new ArrayList<>();
-        this.currentWeight = 0;
         
         // 估算最小盒子尺寸用于网格优化
         this.minBoxSize = Math.min(Math.min(width, height), depth) / 50.0;
@@ -48,9 +44,6 @@ public class OptimizedContainer {
      * 复杂度：O(n²log n)
      */
     public boolean placeBoxOptimized(Box box) {
-        if (currentWeight + box.getWeight() > maxWeight) {
-            return false;
-        }
         
         // 尝试所有6种旋转方向
         for (int orientation = 0; orientation < 6; orientation++) {
@@ -65,7 +58,6 @@ public class OptimizedContainer {
             if (tryPlaceWithPruning(tempBox, boxWidth, boxHeight, boxDepth)) {
                 // 成功放置
                 placedBoxes.add(tempBox);
-                currentWeight += tempBox.getWeight();
                 gridIndex.placeBox(tempBox);
                 updateCandidatePositions(tempBox);
                 
@@ -236,9 +228,6 @@ public class OptimizedContainer {
      * 复杂度：O(n³)
      */
     public boolean placeBoxBruteForce(Box box) {
-        if (currentWeight + box.getWeight() > maxWeight) {
-            return false;
-        }
         
         for (int orientation = 0; orientation < 6; orientation++) {
             Box tempBox = new Box(box);
@@ -257,7 +246,6 @@ public class OptimizedContainer {
                             tempBox.setPlaced(true);
                             
                             placedBoxes.add(tempBox);
-                            currentWeight += tempBox.getWeight();
                             gridIndex.placeBox(tempBox);
                             
                             // 复制状态到原始盒子
@@ -280,7 +268,6 @@ public class OptimizedContainer {
      */
     public boolean removeBox(Box box) {
         if (placedBoxes.remove(box)) {
-            currentWeight -= box.getWeight();
             gridIndex.removeBox(box);
             box.setPlaced(false);
             return true;
@@ -300,8 +287,6 @@ public class OptimizedContainer {
     public double getWidth() { return width; }
     public double getHeight() { return height; }
     public double getDepth() { return depth; }
-    public double getMaxWeight() { return maxWeight; }
-    public double getCurrentWeight() { return currentWeight; }
     public double getVolume() { return width * height * depth; }
     public List<Box> getPlacedBoxes() { return new ArrayList<>(placedBoxes); }
     public int getPlacedBoxCount() { return placedBoxes.size(); }
@@ -311,13 +296,9 @@ public class OptimizedContainer {
         return usedVolume / getVolume();
     }
     
-    public double getWeightUtilization() {
-        return currentWeight / maxWeight;
-    }
-    
     @Override
     public String toString() {
-        return String.format("OptimizedContainer[dims=(%.1f,%.1f,%.1f), boxes=%d, util=%.2f%%, weight=%.1f/%.1f]",
-            width, height, depth, getPlacedBoxCount(), getUtilization() * 100, currentWeight, maxWeight);
+        return String.format("OptimizedContainer[dims=(%.1f,%.1f,%.1f), boxes=%d, util=%.2f%%]",
+            width, height, depth, getPlacedBoxCount(), getUtilization() * 100);
     }
 }
